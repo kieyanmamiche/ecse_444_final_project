@@ -488,7 +488,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 0;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 4294967295;
+  htim2.Init.Period = 3000;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -647,7 +647,7 @@ void StartTask02(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(10);
     osSemaphoreWait(BinSemHandle, osWaitForever);
 
     if ((int) accel[0] > thres) {
@@ -657,9 +657,9 @@ void StartTask02(void const * argument)
    		sprintf(str_tmp, "X-RIGHT NOTE:%d \n \r", note_selector);
    		HAL_UART_Transmit(&huart1, (uint8_t *)str_tmp, sizeof(str_tmp),10000);
    		osDelay(delay);
-   	  }
+   	}
 
-   	  if ((int) accel[0] < -thres) {
+    else if ((int) accel[0] < -thres) {
    		  if (note_selector > 0){
    				note_selector -= 1;
    		  }
@@ -668,7 +668,7 @@ void StartTask02(void const * argument)
    		  osDelay(delay);
    	  }
 
-   	  if ((int) accel[1] > thres) {
+    else if ((int) accel[1] > thres) {
    		  if (note_selector + 7 < 27) {
    			  note_selector += 7;
    		  }
@@ -677,7 +677,7 @@ void StartTask02(void const * argument)
    		  osDelay(delay);
    	  }
 
-   	  if ((int) accel[1] < -thres) {
+    else if ((int) accel[1] < -thres) {
    		  if (note_selector - 7 > 0) {
    			  note_selector -= 7;
    	  	  }
@@ -686,7 +686,7 @@ void StartTask02(void const * argument)
    	  	  osDelay(delay);
    	  }
 
-   	  if ((int) accel[2] > 1000+thres) {
+    else if ((int) accel[2] > 1000+thres) {
    		  if (volume_selector < 3){
    			  volume_selector += 1;
    		  }
@@ -695,14 +695,14 @@ void StartTask02(void const * argument)
    		  osDelay(delay);
    	  }
 
-   	  if ((int) accel[2] < 1000-thres) {
+    else if ((int) accel[2] < 1000-thres) {
    		  if (volume_selector > 0){
    			  volume_selector -= 1;
    		  }
    		  sprintf(str_tmp, "Z_DOWN NOTE:%d\n \r", volume_selector);
    	  	  HAL_UART_Transmit(&huart1, (uint8_t *)str_tmp, sizeof(str_tmp),10000);
    	  	  osDelay(delay);
-   	  }
+   	 }
    	  memset(str_tmp,0,sizeof(str_tmp));
    	  osSemaphoreRelease(BinSemHandle);
   }
